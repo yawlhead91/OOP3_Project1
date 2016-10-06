@@ -11,14 +11,19 @@ import java.nio.file.StandardCopyOption;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class Mp3Factory extends MediaFactory{
+public class Mp4Factory extends MediaFactory{
 	
+	 protected static final String MNG = "mng";
+	 protected static final String WMV = "wmv";
+	 protected static final String AVI = "avi";
+	 protected static final String MP4 = "mp4";
+	 
 	FileOutputStream output = null;
 
 	@Override
 	public File openFile() {
 		//Add image filter to file chooser
-		fc.addChoosableFileFilter(new FileNameExtensionFilter("Mp3 Files", "mp3"));
+		fc.addChoosableFileFilter(new FileNameExtensionFilter("Videos", MNG, WMV, AVI, MP4));
 		fc.setAcceptAllFileFilterUsed(false);
 				
 		//Show the file chooser dialog 

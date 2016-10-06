@@ -1,16 +1,26 @@
 package application;
 
-import java.nio.file.Paths;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-public class MediaPlayer {
+public class MediaPlayer extends Application {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		ImageFactory imageFactory = new ImageFactory();
-		Mp3Factory mp3Factory = new Mp3Factory();
-		
-		mp3Factory.importFile();
-		//imageFactory.defaultSavePath();
-	}
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("Main-UI.fxml"));
+
+        stage.setTitle("Media Player");
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+	
 
 }

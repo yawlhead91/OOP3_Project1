@@ -7,14 +7,15 @@ import javafx.fxml.Initializable;
 
 public class MediaControler implements Initializable{
 	
-	ImageFactory imageFactory = new ImageFactory();
-	Mp3Factory mp3Factory = new Mp3Factory();
-	Mp4Factory mp4Factory = new Mp4Factory();
+	ImageFactory imageFactory;
+	Mp3Factory mp3Factory;
+	Mp4Factory mp4Factory;
 	@Override
-	
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
-		
+		//Initialize components 
+		imageFactory = new ImageFactory();
+		mp3Factory = new Mp3Factory();
+		mp4Factory = new Mp4Factory();
 	}
 	
 }

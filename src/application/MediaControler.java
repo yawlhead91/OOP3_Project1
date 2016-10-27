@@ -8,12 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -44,6 +48,8 @@ public class MediaControler implements Initializable{
 	private Tab musicTab, videoTab, imageTab;
 	@FXML
 	private TilePane tilePane;
+	@FXML
+	private ListView<File> videoListView;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -55,6 +61,7 @@ public class MediaControler implements Initializable{
 		selectionModel = tp.getSelectionModel();
 		try {
 			gatherImages();
+			gatherVideos();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,10 +81,15 @@ public class MediaControler implements Initializable{
 	}
 	
 	
+	
+	//=======================================================
+	//				IMAGE FUNCTIONS
+	//=======================================================
 	public void gatherImages() throws FileNotFoundException{
 		
 		//Populate Image view Carouse
-		String path = "E:" + File.separator + "Pictures";
+		//String path = "C:" + File.separator + "Pictures";
+		String path  = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "Pictures" + File.separator + "Sample Pictures";
 		File folder = new File(path);
 
 		File[] listOfFiles = folder.listFiles();
@@ -133,12 +145,54 @@ public class MediaControler implements Initializable{
 	}
 
 	
+	//=========================================================
+	//				VIDEO FUNCTIONS
+	//=========================================================
 	
+	private void gatherVideos(){
+		String videoPath  = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "Videos" + File.separator + "Sample Videos";
+		File videoDirectory = new File(videoPath);
+		
+		ObservableList<File> videoItems= FXCollections.observableArrayList();
+		
+		File[] listOfVideoFiles = videoDirectory.listFiles();
+		
+		for (final File file : listOfVideoFiles) {
+			videoItems.add(file);
+		}
+		
+		videoListView.setItems(videoItems);
+		videoListView.setCellFactory(lv -> new ListCell<File>() {
+		    @Override
+		    protected void updateItem(File file, boolean empty) {
+		        super.updateItem(file, empty);
+		        setText(file == null ? null : removeExtention(file.getName()));
+		    }
+		});
+		
+		
+		
+		
+	}
 	
+	private static String removeExtention(String filePath) {
+	    File f = new File(filePath);
+	    // if it's a directory, don't remove the extention
+	    if (f.isDirectory()) return f.getName();
+	    String name = f.getName();
+	    // if it is a hidden file
+	    if (name.startsWith(".")) {
+	        // if there is no extn, do not rmove one...
+	        if (name.lastIndexOf('.') == name.indexOf('.')) return name;
+	    }
+	    // if there is no extention, don't do anything
+	    if (!name.contains(".")) return name;
+	    // Otherwise, remove the last 'extension type thing'
+	    return name.substring(0, name.lastIndexOf('.'));
+	}
 	
-	
-	
-	
-	
-	
+	public void itemsClick(MouseEvent arg0){
+		videoListView.getSelectionModel().getSelectedItem();
+		System.out.println("here");
+	}
 }

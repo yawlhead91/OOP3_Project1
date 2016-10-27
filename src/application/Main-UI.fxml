@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="739.0" prefWidth="1095.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MediaControler">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="739.0" prefWidth="1095.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MediaControler">
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="86.0" prefWidth="800.0" style="-fx-background-color: #424242;" BorderPane.alignment="CENTER">
          <children>
@@ -103,7 +103,10 @@
           </Tab>
             <Tab id="images" fx:id="imageTab" disable="true" styleClass="tab-header-area" text="Images">
                <content>
-                  <TilePane prefHeight="200.0" prefWidth="200.0" />
+                  <TilePane fx:id="tilePane" hgap="15.0" prefHeight="200.0" prefWidth="200.0" vgap="15.0">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding></TilePane>
                </content>
             </Tab>
         </tabs>

@@ -8,18 +8,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
+import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
 public class MediaControler implements Initializable{
 	
@@ -69,34 +76,62 @@ public class MediaControler implements Initializable{
 	
 	public void gatherImages() throws FileNotFoundException{
 		
-		//Populate Image view Carousel
-		DirectoryChooser directoryChooser = new DirectoryChooser();
-		
-		directoryChooser.setTitle("Choose a directory with images");
-		File dir = directoryChooser.showDialog(null);
-		
-		List<Image> images = new ArrayList<>();
-		int fileCount = 0;
-		
-		for(File file : dir.listFiles()) {
-		      if(file.isFile()) {
-		        images.add(new Image(new FileInputStream(file)));
-		        GridDisplay(new Image(new FileInputStream(file)));
-		        if(fileCount++ > 50) {
-		          break;
-		        }
-		 }
+		//Populate Image view Carouse
+		String path = "E:" + File.separator + "Pictures";
+		File folder = new File(path);
+
+		File[] listOfFiles = folder.listFiles();
+
+		for (final File file : listOfFiles) {
+			ImageView imageView;
+			imageView = createImageView(file);
+			tilePane.getChildren().addAll(imageView);
 		}
 	}
-	
-	public void GridDisplay(Image im) {
-		tilePane.setHgap(8);
-		tilePane.setPrefColumns(4);
-	    for (int i = 0; i < 20; i++) {
-	    	tilePane.getChildren().add(new ImageView(im));
-	    }
-    }
-	
+
+	private ImageView createImageView(final File imageFile) {
+		// DEFAULT_THUMBNAIL_WIDTH is a constant you need to define
+		// The last two arguments are: preserveRatio, and use smooth (slower)
+		// resizing
+
+		ImageView imageView = null;
+		try {
+			final Image image = new Image(new FileInputStream(imageFile), 200, 0, true,
+					true);
+			imageView = new ImageView(image);
+			imageView.setFitWidth(200);
+
+			imageView.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+							System.out.println("here");
+							try {
+								BorderPane borderPane = new BorderPane();
+								ImageView imageView2 = new ImageView();
+								Image imagee = new Image(new FileInputStream(imageFile));
+								imageView2.setImage(imagee);
+								imageView2.setStyle("-fx-background-color: BLACK");
+								imageView2.setFitHeight(739 -10);
+								imageView2.setPreserveRatio(true);
+								imageView2.setSmooth(true);
+								imageView2.setCache(true);
+								borderPane.setCenter(imageView2);
+								borderPane.setStyle("-fx-background-color: BLACK");
+								Stage newStage = new Stage();
+								newStage.setWidth(1095);
+								newStage.setHeight(739);
+								newStage.setTitle(imageFile.getName());
+								Scene scene = new Scene(borderPane, Color.BLACK);
+								newStage.setScene(scene);
+								newStage.show();
+							} catch (FileNotFoundException ex) {
+								ex.printStackTrace();
+							}
+			});
+		} catch (FileNotFoundException ex) {
+			ex.printStackTrace();
+		}
+		return imageView;
+	}
+
 	
 	
 	

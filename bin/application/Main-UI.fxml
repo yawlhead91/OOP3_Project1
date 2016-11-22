@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.effect.Glow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -15,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="739.0" prefWidth="1095.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MediaControler">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="879.0" prefWidth="1430.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MediaControler">
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="86.0" prefWidth="800.0" style="-fx-background-color: #424242;" BorderPane.alignment="CENTER">
          <children>
@@ -76,36 +75,42 @@
    <center>
       <TabPane fx:id="tp" prefHeight="263.0" prefWidth="627.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab id="video" fx:id="videoTab" disable="true" style="visibility: hidden;" text="Video">
+          <Tab id="video" fx:id="videoTab" disable="false" style="visibility: hidden;" text="Video">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="203.0" prefWidth="627.0">
                      <children>
-                        <VBox alignment="BOTTOM_CENTER" layoutX="-1.0" layoutY="-2.0" prefHeight="624.0" prefWidth="922.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox alignment="TOP_CENTER" layoutX="-1.0" layoutY="-2.0" prefHeight="624.0" prefWidth="922.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <ListView fx:id="videoListView" onMouseClicked="#itemsClick" opacity="0.93" orientation="HORIZONTAL" prefHeight="56.0" prefWidth="922.0" style="-fx-background-color: #424242;" styleClass="list-cell" stylesheets="@style.css">
-                                 <cursor>
-                                    <Cursor fx:constant="HAND" />
-                                 </cursor>
-                                 <effect>
-                                    <Glow />
-                                 </effect>
-                              </ListView>
+                              <BorderPane fx:id="videoMediaCont" prefHeight="582.0" prefWidth="1257.0" style="-fx-background-color: black;" />
+                              <HBox prefHeight="277.0" prefWidth="1257.0" style="-fx-background-color: #424242;">
+                                 <children>
+                                    <ListView fx:id="videoListView" prefHeight="271.0" prefWidth="542.0" style="-fx-background-color: #424242;" />
+                                    <AnchorPane prefHeight="230.0" prefWidth="718.0">
+                                       <children>
+                                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="295.0" layoutY="52.0" mnemonicParsing="false" onAction="#playVideo" prefHeight="127.0" prefWidth="127.0" style="-fx-background-radius: 100%;" text="Button" />
+                                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="438.0" layoutY="80.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" style="-fx-background-radius: 100%;" text="Button" />
+                                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="206.0" layoutY="81.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" style="-fx-background-radius: 100%;" text="Button" />
+                                       </children>
+                                    </AnchorPane>
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab id="Music" fx:id="musicTab" disable="true" style="visibility: hidden;" text="Music">
+          <Tab id="Music" fx:id="musicTab" disable="false" style="visibility: hidden;" text="Music">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <Text layoutX="111.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Music" />
+                        <Slider layoutX="588.0" layoutY="157.0" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab id="images" fx:id="imageTab" disable="true" styleClass="tab-header-area" text="Images">
+            <Tab id="images" fx:id="imageTab" disable="false" styleClass="tab-header-area" text="Images">
                <content>
                   <TilePane fx:id="tilePane" hgap="15.0" prefHeight="200.0" prefWidth="200.0" vgap="15.0">
                      <padding>

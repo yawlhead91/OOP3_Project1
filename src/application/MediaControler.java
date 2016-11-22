@@ -8,29 +8,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SingleSelectionModel;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.*;
+import javafx.scene.media.AudioSpectrumListener;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class MediaControler implements Initializable{
 	
@@ -38,6 +43,11 @@ public class MediaControler implements Initializable{
 	Mp3Factory mp3Factory;
 	Mp4Factory mp4Factory;
 	SingleSelectionModel<Tab> selectionModel;
+	Media media;
+	MediaPlayer player;
+	MediaView view;
+	Slider slider = new Slider();
+    File currentVideoPath;
 	
 
 	@FXML 
@@ -50,6 +60,8 @@ public class MediaControler implements Initializable{
 	private TilePane tilePane;
 	@FXML
 	private ListView<File> videoListView;
+	@FXML
+	private BorderPane videoMediaCont;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -62,13 +74,26 @@ public class MediaControler implements Initializable{
 		try {
 			gatherImages();
 			gatherVideos();
+			setMediaViews();
+            listViewInit();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+
 	}
-	
-	
+
+	private void listViewInit(){
+        videoListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<File>() {
+            @Override
+            public void changed(ObservableValue<? extends File> observable, File oldValue, File newValue) {
+                currentVideoPath = newValue;
+            }
+        });
+    }
+
+
 	//Change tab view on click
 	public void musicTabSelect(){
 		selectionModel.select(musicTab);
@@ -89,7 +114,7 @@ public class MediaControler implements Initializable{
 		
 		//Populate Image view Carouse
 		//String path = "C:" + File.separator + "Pictures";
-		String path  = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "Pictures" + File.separator + "Sample Pictures";
+		String path  = "E:" + File.separator + "Pictures";
 		File folder = new File(path);
 
 		File[] listOfFiles = folder.listFiles();
@@ -150,17 +175,17 @@ public class MediaControler implements Initializable{
 	//=========================================================
 	
 	private void gatherVideos(){
-		String videoPath  = "C:" + File.separator + "Users" + File.separator + "Public" + File.separator + "Videos" + File.separator + "Sample Videos";
+		String videoPath  = "E:" + File.separator + "Videos";
 		File videoDirectory = new File(videoPath);
-		
+
 		ObservableList<File> videoItems= FXCollections.observableArrayList();
-		
+
 		File[] listOfVideoFiles = videoDirectory.listFiles();
-		
+
 		for (final File file : listOfVideoFiles) {
 			videoItems.add(file);
 		}
-		
+
 		videoListView.setItems(videoItems);
 		videoListView.setCellFactory(lv -> new ListCell<File>() {
 		    @Override
@@ -169,10 +194,7 @@ public class MediaControler implements Initializable{
 		        setText(file == null ? null : removeExtention(file.getName()));
 		    }
 		});
-		
-		
-		
-		
+
 	}
 	
 	private static String removeExtention(String filePath) {
@@ -195,4 +217,108 @@ public class MediaControler implements Initializable{
 		videoListView.getSelectionModel().getSelectedItem();
 		System.out.println("here");
 	}
+
+
+    private void setMediaViews(){
+        view = new MediaView();
+        videoMediaCont.setCenter(view);
+        view.setFitWidth(900);
+    }
+
+
+	public void playVideo(){
+
+		media = new Media(new File(currentVideoPath.getAbsolutePath()).toURI().toString());
+		player = new MediaPlayer(media);
+
+
+
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setFillHeight(true);
+        hbox.setMinHeight(35);
+        int bands = player.getAudioSpectrumNumBands();
+        System.out.print(bands);
+        Rectangle[] rects = new Rectangle[bands];
+
+        for(int i = 0; i<rects.length; i++){
+            rects[i] = new Rectangle();
+            rects[i].setFill(Color.ORANGERED);
+            hbox.getChildren().add(rects[i]);
+        }
+
+
+		VBox vbox = new VBox();
+		Slider slider = new Slider();
+
+		vbox.getChildren().add(slider);
+        vbox.getChildren().add(hbox);
+
+
+		videoMediaCont.setBottom(vbox);
+
+        view.setMediaPlayer(player);
+		player.play();
+
+		player.setOnReady(new Runnable() {
+			@Override
+			public void run() {
+				int w = player.getMedia().getWidth();
+				int h = player.getMedia().getHeight();
+
+                hbox.setMinWidth(w);
+                int bandWidth =w/rects.length;
+
+                for(Rectangle r:rects){
+                    r.setWidth(bandWidth);
+                    r.setHeight(2);
+                }
+				vbox.setAlignment(Pos.CENTER);
+				vbox.setMinHeight(50);
+
+				slider.setMaxSize(900,50);
+				slider.setMin(0.0);
+				slider.setValue(0.0);
+				slider.setMax(player.getTotalDuration().toSeconds());
+
+
+                player.currentTimeProperty().addListener(new ChangeListener<Duration>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration current) {
+                        slider.setValue(current.toSeconds());
+                    }
+                });
+			}
+		});
+
+        slider.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.print(slider.getValue());
+                player.seek(Duration.seconds(slider.getValue()));
+            }
+        });
+
+        player.setAudioSpectrumListener(new AudioSpectrumListener() {
+            @Override
+            public void spectrumDataUpdate(double timestamp, double duration, float[] magnitudes, float[] phases) {
+                for(int i=0; i<rects.length; i++){
+                    double h = magnitudes[i]+60;
+                    if(h> 2){
+                        rects[i].setHeight(h);
+                    }
+                }
+            }
+        });
+	}
+
+	private void pauseVideo(){
+        
+    }
+
+
 }
+
+
+
+

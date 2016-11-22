@@ -4,13 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
-
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -19,23 +13,22 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.AudioSpectrumListener;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.omg.CORBA.BooleanHolder;
 
 public class MediaControler implements Initializable{
 	
@@ -47,7 +40,7 @@ public class MediaControler implements Initializable{
 	MediaPlayer player;
 	MediaView view;
 	Slider slider = new Slider();
-    File currentVideoPath;
+	Boolean pressed;
 	
 
 	@FXML 
@@ -71,6 +64,7 @@ public class MediaControler implements Initializable{
 		mp4Factory = new Mp4Factory();
 		
 		selectionModel = tp.getSelectionModel();
+		pressed = false;
 		try {
 			gatherImages();
 			gatherVideos();
@@ -88,7 +82,7 @@ public class MediaControler implements Initializable{
         videoListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<File>() {
             @Override
             public void changed(ObservableValue<? extends File> observable, File oldValue, File newValue) {
-                currentVideoPath = newValue;
+				playVideo(newValue);
             }
         });
     }
@@ -113,8 +107,7 @@ public class MediaControler implements Initializable{
 	public void gatherImages() throws FileNotFoundException{
 		
 		//Populate Image view Carouse
-		//String path = "C:" + File.separator + "Pictures";
-		String path  = "E:" + File.separator + "Pictures";
+		String path  = "src" + File.separator + "Images";
 		File folder = new File(path);
 
 		File[] listOfFiles = folder.listFiles();
@@ -139,7 +132,6 @@ public class MediaControler implements Initializable{
 			imageView.setFitWidth(200);
 
 			imageView.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
-							System.out.println("here");
 							try {
 								BorderPane borderPane = new BorderPane();
 								ImageView imageView2 = new ImageView();
@@ -175,7 +167,9 @@ public class MediaControler implements Initializable{
 	//=========================================================
 	
 	private void gatherVideos(){
-		String videoPath  = "E:" + File.separator + "Videos";
+
+
+		String videoPath  = "src" + File.separator + "Videos";
 		File videoDirectory = new File(videoPath);
 
 		ObservableList<File> videoItems= FXCollections.observableArrayList();
@@ -212,21 +206,18 @@ public class MediaControler implements Initializable{
 	    // Otherwise, remove the last 'extension type thing'
 	    return name.substring(0, name.lastIndexOf('.'));
 	}
-	
-	public void itemsClick(MouseEvent arg0){
-		videoListView.getSelectionModel().getSelectedItem();
-		System.out.println("here");
-	}
-
 
     private void setMediaViews(){
         view = new MediaView();
         videoMediaCont.setCenter(view);
         view.setFitWidth(900);
+		view.setFitHeight(500);
+
+		System.out.println(view.getFitHeight());
     }
 
 
-	public void playVideo(){
+	public void playVideo(File currentVideoPath){
 
 		media = new Media(new File(currentVideoPath.getAbsolutePath()).toURI().toString());
 		player = new MediaPlayer(media);
@@ -238,7 +229,6 @@ public class MediaControler implements Initializable{
         hbox.setFillHeight(true);
         hbox.setMinHeight(35);
         int bands = player.getAudioSpectrumNumBands();
-        System.out.print(bands);
         Rectangle[] rects = new Rectangle[bands];
 
         for(int i = 0; i<rects.length; i++){
@@ -273,6 +263,7 @@ public class MediaControler implements Initializable{
                     r.setWidth(bandWidth);
                     r.setHeight(2);
                 }
+
 				vbox.setAlignment(Pos.CENTER);
 				vbox.setMinHeight(50);
 
@@ -294,7 +285,6 @@ public class MediaControler implements Initializable{
         slider.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.print(slider.getValue());
                 player.seek(Duration.seconds(slider.getValue()));
             }
         });
@@ -312,9 +302,35 @@ public class MediaControler implements Initializable{
         });
 	}
 
-	private void pauseVideo(){
-        
+	public void setVideoStatus(){
+		if(player != null){
+			Status currentStatus = player.getStatus();
+
+			if(currentStatus == Status.PLAYING)
+			{
+				player.pause();
+			}
+			else if(currentStatus == Status.PAUSED || currentStatus == Status.STOPPED)
+			{
+				player.play();
+			}
+		}
     }
+
+    public void fastforward() {
+		player.setRate(2);
+	}
+
+	public void rewind(){
+			player.seek(player.getCurrentTime().subtract(Duration.seconds(2)) );
+	}
+
+	public void setNormal() {
+		player.setRate(1);
+	}
+
+
+
 
 
 }

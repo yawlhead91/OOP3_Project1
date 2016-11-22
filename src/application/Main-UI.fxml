@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -49,6 +52,9 @@
                <VBox.margin>
                   <Insets bottom="20.0" />
                </VBox.margin>
+               <effect>
+                  <DropShadow />
+               </effect>
             </Button>
             <Button fx:id="videoBtn" mnemonicParsing="false" onAction="#videoTabSelect" prefHeight="103.0" prefWidth="157.0" style="-fx-background-color: #424242;" text="Video" textFill="#f83e00">
                <font>
@@ -57,11 +63,17 @@
                <VBox.margin>
                   <Insets bottom="20.0" />
                </VBox.margin>
+               <effect>
+                  <DropShadow />
+               </effect>
             </Button>
             <Button fx:id="imagesBtn" mnemonicParsing="false" onAction="#imageTabSelect" prefHeight="103.0" prefWidth="157.0" style="-fx-background-color: #424242;" text="Images" textFill="#f83e00">
                <font>
                   <Font name="Arial Rounded MT Bold" size="24.0" />
                </font>
+               <effect>
+                  <DropShadow />
+               </effect>
             </Button>
          </children>
          <BorderPane.margin>
@@ -82,14 +94,86 @@
                         <VBox alignment="TOP_CENTER" layoutX="-1.0" layoutY="-2.0" prefHeight="624.0" prefWidth="922.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <BorderPane fx:id="videoMediaCont" prefHeight="582.0" prefWidth="1257.0" style="-fx-background-color: black;" />
-                              <HBox prefHeight="277.0" prefWidth="1257.0" style="-fx-background-color: #424242;">
+                              <HBox maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="277.0" prefWidth="1257.0" style="-fx-background-color: #424242;">
                                  <children>
-                                    <ListView fx:id="videoListView" prefHeight="271.0" prefWidth="542.0" style="-fx-background-color: #424242;" />
+                                    <VBox prefHeight="230.0" prefWidth="636.0">
+                                       <children>
+                                          <HBox prefHeight="100.0" prefWidth="588.0">
+                                             <children>
+                                                <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="73.0" style="-fx-background-color: #616161;" text="Import" textFill="#f83e00">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <effect>
+                                                      <DropShadow />
+                                                   </effect>
+                                                   <HBox.margin>
+                                                      <Insets right="10.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="73.0" style="-fx-background-color: #616161;" text="Export" textFill="#f83e00">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <effect>
+                                                      <DropShadow />
+                                                   </effect>
+                                                   <HBox.margin>
+                                                      <Insets right="10.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                                <Button mnemonicParsing="false" prefHeight="37.0" prefWidth="73.0" style="-fx-background-color: #616161;" text="Delete" textFill="#f83e00">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                   <effect>
+                                                      <DropShadow />
+                                                   </effect>
+                                                </Button>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                                             </padding>
+                                          </HBox>
+                                          <ListView fx:id="videoListView" prefHeight="271.0" prefWidth="542.0" style="-fx-background-color: #424242;" stylesheets="@style.css">
+                                             <effect>
+                                                <InnerShadow />
+                                             </effect>
+                                          </ListView>
+                                       </children>
+                                    </VBox>
                                     <AnchorPane prefHeight="230.0" prefWidth="718.0">
                                        <children>
-                                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="295.0" layoutY="52.0" mnemonicParsing="false" onAction="#playVideo" prefHeight="127.0" prefWidth="127.0" style="-fx-background-radius: 100%;" text="Button" />
-                                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="438.0" layoutY="80.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" style="-fx-background-radius: 100%;" text="Button" />
-                                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="206.0" layoutY="81.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" style="-fx-background-radius: 100%;" text="Button" />
+                                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="273.0" layoutY="52.0" mnemonicParsing="false" onAction="#setVideoStatus" prefHeight="127.0" prefWidth="127.0" style="-fx-background-radius: 100%; -fx-background-color: #616161;" text="PLAY" textFill="#f83e00">
+                                             <font>
+                                                <Font size="28.0" />
+                                             </font>
+                                             <effect>
+                                                <DropShadow />
+                                             </effect>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor></Button>
+                                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="416.0" layoutY="80.0" mnemonicParsing="false" onMousePressed="#fastforward" onMouseReleased="#setNormal" prefHeight="70.0" prefWidth="70.0" style="-fx-background-radius: 100%; -fx-background-color: #616161;" text="&gt;&gt;" textFill="#f83e00">
+                                             <font>
+                                                <Font size="22.0" />
+                                             </font>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                             <effect>
+                                                <DropShadow />
+                                             </effect></Button>
+                                          <Button alignment="CENTER" contentDisplay="CENTER" layoutX="184.0" layoutY="81.0" mnemonicParsing="false" onMousePressed="#rewind" prefHeight="70.0" prefWidth="70.0" style="-fx-background-radius: 100%; -fx-background-color: #616161;" text="&lt;&lt;" textFill="#f83e00">
+                                             <font>
+                                                <Font size="22.0" />
+                                             </font>
+                                             <cursor>
+                                                <Cursor fx:constant="HAND" />
+                                             </cursor>
+                                             <effect>
+                                                <DropShadow />
+                                             </effect></Button>
                                        </children>
                                     </AnchorPane>
                                  </children>
